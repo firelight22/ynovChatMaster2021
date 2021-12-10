@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">YnovChatIntl</string>
+    <string name="trslmgdfs">dmlfgjklsdf</string>
+    <string name="username">Username</string>
+    <string name="hintIdentifier">Nom d\'utilisateur ou e-mail</string>
+    <string name="password">Mot de passe</string>
+
+</resources>

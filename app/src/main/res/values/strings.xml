@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">YnovChat</string>
+    <string name="trslmgdfs">dmlfgjklsdf</string>
+    <string name="username">Nom d\'utilisateur</string>
+    <string name="title_activity_my_test">MyTestActivity</string>
+    <string name="hintIdentifier">Nom d\'utilisateur ou e-mail</string>
+    <string name="password">Mot de passe</string>
+</resources>
