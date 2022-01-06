@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_main"
+    app:startDestination="@id/listMessageFragment">
+    <fragment
+        android:id="@+id/detailMessageFragment"
+        android:name="com.ynov.ynovchat.fragment.DetailMessageFragment"
+        android:label="fragment_detail_message"
+        tools:layout="@layout/fragment_detail_message" >
+        <argument
+            android:name="message"
+            app:argType="com.ynov.ynovchat.bo.Message" />
+    </fragment>
+    <fragment
+        android:id="@+id/listMessageFragment"
+        android:name="com.ynov.ynovchat.fragment.ListMessageFragment"
+        android:label="fragment_list_message"
+        tools:layout="@layout/fragment_list_message" >
+        <action
+            android:id="@+id/liste_2_detail"
+            app:destination="@id/detailMessageFragment"
+            app:popUpTo="@id/listMessageFragment"
+            app:popUpToInclusive="false" >
+        </action>
+    </fragment>
+</navigation>
