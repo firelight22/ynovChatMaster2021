@@ -22,8 +22,19 @@ import java.util.ArrayList;
 public class MessageAdapter extends RecyclerView.Adapter<MessageHolder> {
     ArrayList<Message> messageArrayList;
 
-    public MessageAdapter(ArrayList<Message> messageArrayList) {
+    public MessageAdapter() {
+        messageArrayList = new ArrayList<>();
+    }
+
+    public void addMessage(Message m){
+        messageArrayList.add(m);
+        notifyItemInserted(messageArrayList.size()-1);
+    }
+
+
+    public void setMessageArrayList(ArrayList<Message> messageArrayList) {
         this.messageArrayList = messageArrayList;
+        notifyDataSetChanged();
     }
 
     @NonNull
