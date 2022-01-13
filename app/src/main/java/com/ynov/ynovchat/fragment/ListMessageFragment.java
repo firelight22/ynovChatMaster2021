@@ -180,6 +180,7 @@ public class ListMessageFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.item_refresh){
             fetchMessages();
+            //Que faire lors de l'appui sur refresh
         }
         return super.onOptionsItemSelected(item);
     }

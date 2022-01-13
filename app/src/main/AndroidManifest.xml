@@ -13,8 +13,8 @@
         android:theme="@style/Theme.YnovChat">
         <activity
             android:name=".activity.MainActivity"
-            android:theme="@style/Theme.YnovChat.NoActionBar"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.YnovChat.NoActionBar" />
         <activity
             android:name=".activity.ShowMsgActivity"
             android:exported="true" />
