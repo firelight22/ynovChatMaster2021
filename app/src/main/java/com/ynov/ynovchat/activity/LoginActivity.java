@@ -28,11 +28,15 @@ import okhttp3.Response;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     ActivityLoginBinding binding;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = getSharedPreferences(getString(R.string.spConfigName), MODE_PRIVATE);
+        checkIfTokenExist();
         binding = DataBindingUtil.setContentView(this,R.layout.activity_login);
+
         binding.buttonLogin.setOnClickListener(view -> {
             String identifier = binding.editTextIdentifier.getText().toString();
             String password = binding.editTextPassword.getText().toString();
@@ -64,7 +68,6 @@ public class LoginActivity extends AppCompatActivity {
                                 //TODO récupération du token
                                 String token = responseBodyJson.getString("jwt");
                                 //TODO création du fichier SharedPreferences
-                                SharedPreferences sp = getSharedPreferences(getString(R.string.spConfigName), MODE_PRIVATE);
                                 //TODO enregistrer le token dans les SharedPref
                                 sp.edit().putString(getString(R.string.keyJwt),token).commit();
                                 onUserLoggedIn();
@@ -80,6 +83,11 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         });
+    }
+    private void checkIfTokenExist(){
+        if(!sp.getString(getString(R.string.keyJwt),"").isEmpty()){
+            onUserLoggedIn();
+        }
     }
 
     private void onUserLoggedIn(){

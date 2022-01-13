@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -181,6 +182,9 @@ public class ListMessageFragment extends Fragment {
         if(item.getItemId() == R.id.item_refresh){
             fetchMessages();
             //Que faire lors de l'appui sur refresh
+        }else if(item.getItemId() == R.id.item_users){
+            //TODO Changer de destination (vers ListUsersFragment)
+            Navigation.findNavController(getView()).navigate(R.id.action_listMsg_to_listUsers);
         }
         return super.onOptionsItemSelected(item);
     }

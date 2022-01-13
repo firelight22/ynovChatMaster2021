@@ -24,5 +24,13 @@
             app:popUpTo="@id/listMessageFragment"
             app:popUpToInclusive="false" >
         </action>
+        <action
+            android:id="@+id/action_listMsg_to_listUsers"
+            app:destination="@id/listUsersFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/listUsersFragment"
+        android:name="com.ynov.ynovchat.fragment.ListUsersFragment"
+        android:label="fragment_list_users"
+        tools:layout="@layout/fragment_list_users" />
 </navigation>

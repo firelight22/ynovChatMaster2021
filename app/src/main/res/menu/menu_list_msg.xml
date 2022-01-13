@@ -7,4 +7,7 @@
         android:icon="@drawable/ic_baseline_refresh_24"
         android:title="Refresh"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/item_users"
+        android:title="Liste Users" />
 </menu>
