@@ -9,3 +9,6 @@ dependencyResolutionManagement {
 rootProject.name = "YnovChat"
 include ':app'
 include ':viewmodelcompteur'
+include ':mapappynov'
+include ':webviewynov'
+include ':roomynov'
