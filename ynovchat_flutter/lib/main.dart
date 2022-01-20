@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynovchat_flutter/home_page.dart';
 import 'package:ynovchat_flutter/register_page.dart';
+import 'package:ynovchat_flutter/routes.dart';
 
 import 'login_page.dart';
 
@@ -27,11 +28,11 @@ class MyApp extends StatelessWidget {
       //      RegisterPage(settings.arguments as String));
       //  }
       //},
-      initialRoute: '/home_page',
+      initialRoute: ROUTE_HOME_PAGE,
       routes: <String, WidgetBuilder>{
-        '/login':(BuildContext context) => LoginPage(),
-        '/register':(BuildContext context) => RegisterPage(),
-        '/home_page':(BuildContext context) => HomePage(),
+        ROUTE_LOGIN:(BuildContext context) => LoginPage(),
+        ROUTE_REGISTER:(BuildContext context) => RegisterPage(),
+        ROUTE_HOME_PAGE:(BuildContext context) => HomePage(),
       },
     );
   }

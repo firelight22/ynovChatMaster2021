@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as developer;
+
+import 'package:ynovchat_flutter/routes.dart';
 
 class LoginPage extends StatelessWidget {
   late TextEditingController tecId, tecPwd;
@@ -59,7 +62,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  void _login(BuildContext context){
+  void _login(BuildContext context) async{
     String id = tecId.text;
     String password = tecPwd.text;
     Future<http.Response> res = http.post(
@@ -69,11 +72,18 @@ class LoginPage extends StatelessWidget {
         "password": password
       }
     );
-    res.then((value) {
+    res.then((value) async {
       if(value.statusCode == 200){
         //YOOPI
         Map<String,dynamic> bodyJson = jsonDecode(value.body);
-        developer.log(bodyJson["jwt"]);
+        String jwt = bodyJson["jwt"];
+        developer.log(jwt);
+        await FlutterSecureStorage().write(key: "jwt", value: jwt).then(
+            (value) => Navigator.of(context).pushReplacementNamed(ROUTE_HOME_PAGE),
+          onError: (_, error) => developer.log("Erreur Sauvegarde token : "
+            + error.toString())
+        );
+
       }
     }, onError: (obj){
       developer.log("erreur lors de la connexion " + obj.toString());

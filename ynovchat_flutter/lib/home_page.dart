@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -18,8 +19,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  ScrollController? sc;
   late StreamController<List<Message>> _streamControllerListMsgs;
   late Stream<List<Message>> _streamMsgs;
+  late TextEditingController tecMsg;
 
   @override
   void initState() {
@@ -28,6 +31,7 @@ class _HomePageState extends State<HomePage> {
     initializeDateFormatting('fr_FR', null);
     //TimeAgo
     setLocaleMessages("fr_short", FrShortMessages());
+    tecMsg = TextEditingController(text: "");
     _streamControllerListMsgs = StreamController<List<Message>>();
     _streamMsgs = _streamControllerListMsgs.stream;
     fetchMessages();
@@ -38,7 +42,28 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text("Ynov Chat"),
       ),
-      body: _buildList()
+      body: Column(
+        children: [
+          Expanded(child: _buildList()),
+          Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: tecMsg,
+                    decoration: const InputDecoration(hintText: "Tapez votre message..."),
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () => null,
+                child: const Icon(Icons.send)
+              )
+            ],
+          ),
+        ],
+      )
     );
   }
 
@@ -52,13 +77,15 @@ class _HomePageState extends State<HomePage> {
         if(!snapshot.hasData) {
           return const Center(child: const CircularProgressIndicator());
         } else {
+          sc = ScrollController();
           return ListView.separated(
+            controller: sc,
             itemCount: snapshot.data!.length,
             separatorBuilder:
               (BuildContext context, int index) => const Divider(/*thickness: 1.5,*/),
             itemBuilder: (context, index) =>
               ListTile(
-                leading: Image.network('https://fujifilm-x.com/wp-content/uploads/2019/08/x-t3_sample-images02.jpg'),
+                //leading: Image.network('https://fujifilm-x.com/wp-content/uploads/2019/08/x-t3_sample-images02.jpg'),
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -81,11 +108,14 @@ class _HomePageState extends State<HomePage> {
     DateTime dateTime = df.parse(isoDate);
     return format(dateTime,locale: 'fr_short');
   }
-
-  void fetchMessages(){
+  void pommeDeterre(){
+    sc!.jumpTo(sc!.positions.length-1);
+  }
+  void fetchMessages() async{
+    String jwt = await FlutterSecureStorage().read(key: "jwt") ?? "";
     Future<Response> resMsgs = get(
       Uri.parse("https://flutter-learning.mooo.com/messages"),
-      headers: {"Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjQyNjcxMzMyLCJleHAiOjE2NDUyNjMzMzJ9.46AmdmoaNWPaYdDoR-4YImCSBNROendkxWD5_oz39Nc"}
+      headers: {"Authorization":"Bearer $jwt"}
     );
     resMsgs.then(
       (value) {
