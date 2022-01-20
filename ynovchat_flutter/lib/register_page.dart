@@ -8,7 +8,7 @@ import 'dart:developer' as developer;
 class RegisterPage extends StatelessWidget {
   late TextEditingController tecEmail,tecUsername,tecPassword;
 
-  RegisterPage(String titre,{Key? key}) : super(key: key){
+  RegisterPage({Key? key}) : super(key: key){
     tecEmail = TextEditingController();
     tecUsername = TextEditingController();
     tecPassword = TextEditingController();
@@ -30,8 +30,8 @@ class RegisterPage extends StatelessWidget {
               _buildUsernameField(),
               _buildPasswordField(),
               Spacer(),
-              _buildRegisterButton(),
-              _buildLoginButton()
+              _buildRegisterButton(context),
+              _buildLoginButton(context)
             ],
           ),
         ),
@@ -69,17 +69,17 @@ class RegisterPage extends StatelessWidget {
     ),
   );
 
-  Widget _buildRegisterButton() => ElevatedButton(
-    onPressed: () => register(),
+  Widget _buildRegisterButton(BuildContext context) => ElevatedButton(
+    onPressed: () => register(context),
     child: Text("S'inscrire".toUpperCase())
   );
 
-  Widget _buildLoginButton() => OutlinedButton(
-    onPressed: (){},
+  Widget _buildLoginButton(BuildContext context) => OutlinedButton(
+    onPressed: ()=> Navigator.of(context).pushReplacementNamed('/login'),
     child: Text("Se connecter".toUpperCase())
   );
 
-  void register() {
+  void register(BuildContext context) {
     String username = tecUsername.text;
     String email = tecEmail.text;
     String password = tecPassword.text;
@@ -97,6 +97,9 @@ class RegisterPage extends StatelessWidget {
         //YOOPI
         Map<String,dynamic> bodyJson = jsonDecode(value.body);
         developer.log(bodyJson["jwt"]);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content:Text("Inscription réussie")));
+        tecPassword.text = tecEmail.text = tecUsername.text = "";
       }
     }, onError: (obj){
       developer.log("erreur lors de l'inscription " + obj.toString());

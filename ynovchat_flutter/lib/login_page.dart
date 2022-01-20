@@ -49,7 +49,7 @@ class LoginPage extends StatelessWidget {
                 child: Text("Se connecter".toUpperCase(),)
               ),
               OutlinedButton(
-                onPressed: ()=> Navigator.of(context).pushNamed('/register',arguments: "MON TITRE"),
+                onPressed: ()=> Navigator.of(context).pushNamed('/register'),
                 child: Text("S'inscrire".toUpperCase())
               )
             ],
