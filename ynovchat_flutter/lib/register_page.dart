@@ -104,7 +104,7 @@ class RegisterPage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content:Text("Inscription réussie")));
         tecPassword.text = tecEmail.text = tecUsername.text = "";
-        await FlutterSecureStorage().write(key: "jwt", value: jwt).then(
+        await const FlutterSecureStorage().write(key: "jwt", value: jwt).then(
             (value) => Navigator.of(context).pushReplacementNamed(ROUTE_HOME_PAGE),
           onError: (_, error) => developer.log("Erreur Sauvegarde token : "
             + error.toString())

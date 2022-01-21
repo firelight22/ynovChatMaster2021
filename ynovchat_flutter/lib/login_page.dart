@@ -78,12 +78,11 @@ class LoginPage extends StatelessWidget {
         Map<String,dynamic> bodyJson = jsonDecode(value.body);
         String jwt = bodyJson["jwt"];
         developer.log(jwt);
-        await FlutterSecureStorage().write(key: "jwt", value: jwt).then(
+        await const FlutterSecureStorage().write(key: "jwt", value: jwt).then(
             (value) => Navigator.of(context).pushReplacementNamed(ROUTE_HOME_PAGE),
           onError: (_, error) => developer.log("Erreur Sauvegarde token : "
             + error.toString())
         );
-
       }
     }, onError: (obj){
       developer.log("erreur lors de la connexion " + obj.toString());

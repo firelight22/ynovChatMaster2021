@@ -18,6 +18,4 @@ class Message{
     "author" : author.toJson(),
     "created_at" : created_at
   };
-
-
 }
