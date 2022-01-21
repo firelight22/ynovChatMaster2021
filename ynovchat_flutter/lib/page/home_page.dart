@@ -13,7 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:ynovchat_flutter/bo/message.dart';
 import 'package:ynovchat_flutter/routes.dart';
-
+import 'package:latlng/latlng.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -142,11 +142,25 @@ class _HomePageState extends State<HomePage> {
   void _launchUrl(String content){
     //TODO Parser le content pour savoir si c'est une url
     RegExp urlRegex = RegExp(r"((https?:www\.)|(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9]{1,6}(\/[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)?");
+    RegExp latLngRegex = RegExp(r"^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$");
     bool isUri = urlRegex.hasMatch(content);
     //TODO Lancer l'url dans un naviguateur (WebView)
     if(isUri){
       launch(urlRegex.firstMatch(content)?.group(0) ?? "");
+    }else{
+      String? latLngUri =  latLngRegex.firstMatch(content)?.group(0);
+      if(latLngUri != null){
+        double latitude = double.parse(latLngUri.split(',')[0]);
+        String? longitudeS =latLngUri.split(',')[1];
+        if(longitudeS != null){
+          double longitude =  double.parse(longitudeS);
+          Navigator.of(context).pushNamed(
+            ROUTE_MAP_PAGE,
+            arguments:LatLng(latitude,longitude));
+        }
+      }
     }
+
 
   }
 
