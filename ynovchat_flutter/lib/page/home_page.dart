@@ -4,13 +4,14 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:ynovchat_flutter/message.dart';
+import 'package:ynovchat_flutter/bo/message.dart';
 import 'package:ynovchat_flutter/routes.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,7 +22,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  ScrollController? sc;
+  //ScrollController? sc;
   late StreamController<List<Message>> _streamControllerListMsgs;
   late Stream<List<Message>> _streamMsgs;
   late TextEditingController tecMsg;
@@ -49,6 +50,10 @@ class _HomePageState extends State<HomePage> {
           Expanded(child: _buildList()),
           Row(
             children: [
+              IconButton(
+                onPressed: _locateMe,
+                icon: const Icon(Icons.my_location)
+              ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -69,6 +74,31 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _locateMe() async{
+    // Check si la localisation est activée
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    // Check si on a la permission
+    LocationPermission permission = await Geolocator.checkPermission();
+    if(permission == LocationPermission.denied) {
+      Geolocator.requestPermission();
+    } else if (permission == LocationPermission.deniedForever)
+      return;
+    // Récupérer la localisation et l'ajouter dans l'input text
+    if(serviceEnabled && permission == LocationPermission.always ||
+      permission == LocationPermission.whileInUse) {
+      Geolocator.getCurrentPosition().then(
+          (position) {
+            tecMsg.text =
+              '${position.latitude},${position.longitude}';
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Votre position a été récupérée")));
+          },
+        onError: (error, stacktrace)
+          => log("Erreur lors de la récupération de la position:${error.toString()}")
+      );
+    }
+  }
+
   StreamBuilder<List<Message>> _buildList() {
     return StreamBuilder<List<Message>>(
       stream: _streamMsgs,
@@ -79,15 +109,16 @@ class _HomePageState extends State<HomePage> {
         if(!snapshot.hasData) {
           return const Center(child: const CircularProgressIndicator());
         } else {
-          sc = ScrollController();
+          //sc = ScrollController();
           return ListView.separated(
-            controller: sc,
+            //controller: sc,
             itemCount: snapshot.data!.length,
             separatorBuilder:
               (BuildContext context, int index) => const Divider(/*thickness: 1.5,*/),
             itemBuilder: (context, index) =>
               InkWell(
-                onTap: ()=> _launchUrl(snapshot.data![index].content),
+                onTap: () {_launchUrl(snapshot.data![index].content);},
+                onLongPress: (){},
                 child: ListTile(
                   //leading: Image.network('https://fujifilm-x.com/wp-content/uploads/2019/08/x-t3_sample-images02.jpg'),
                   title: Row(
@@ -110,8 +141,7 @@ class _HomePageState extends State<HomePage> {
 
   void _launchUrl(String content){
     //TODO Parser le content pour savoir si c'est une url
-    RegExp urlRegex = RegExp(
-      "https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)");
+    RegExp urlRegex = RegExp(r"((https?:www\.)|(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9]{1,6}(\/[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)?");
     bool isUri = urlRegex.hasMatch(content);
     //TODO Lancer l'url dans un naviguateur (WebView)
     if(isUri){

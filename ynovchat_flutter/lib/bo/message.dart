@@ -1,4 +1,4 @@
-import 'package:ynovchat_flutter/user.dart';
+import 'package:ynovchat_flutter/bo/user.dart';
 
 class Message{
   String content;
