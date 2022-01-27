@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart';
@@ -26,6 +28,9 @@ class _HomePageState extends State<HomePage> {
   late StreamController<List<Message>> _streamControllerListMsgs;
   late Stream<List<Message>> _streamMsgs;
   late TextEditingController tecMsg;
+  final ImagePicker ip = ImagePicker();
+  bool modeImagePicked = false;
+  String imageBasee64Content = "";
 
   @override
   void initState() {
@@ -51,6 +56,10 @@ class _HomePageState extends State<HomePage> {
           Row(
             children: [
               IconButton(
+                onPressed: _pickImage,
+                icon: const Icon(Icons.image)
+              ),
+              IconButton(
                 onPressed: _locateMe,
                 icon: const Icon(Icons.my_location)
               ),
@@ -72,6 +81,19 @@ class _HomePageState extends State<HomePage> {
         ],
       )
     );
+  }
+
+  void _pickImage() async{
+    XFile? imagePicked = await
+      ip.pickImage(source: ImageSource.gallery,imageQuality: 10);
+    if(imagePicked != null){
+      modeImagePicked = true;
+      log(imagePicked.name);
+      Uint8List imageBytes = await imagePicked.readAsBytes();
+      imageBasee64Content = base64Encode(imageBytes.toList());
+      tecMsg.text = imagePicked.path;
+      log(base64Encode(imageBytes.toList()));
+    }
   }
 
   void _locateMe() async{
@@ -130,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ]
                   ,),
-                  subtitle: Text(snapshot.data![index].content),
+                  subtitle: /*isImage ? Image.memory(bytes) :*/Text(snapshot.data![index].content),
             ),
               )
           );
@@ -203,13 +225,19 @@ class _HomePageState extends State<HomePage> {
       Uri.parse("https://flutter-learning.mooo.com/messages"),
       headers: {"Authorization":"Bearer $jwt"},
       body: {
-        "content" : tecMsg.value.text.trim()
+        "content" : modeImagePicked ? imageBasee64Content :
+          tecMsg.value.text.trim(),
+        "isImage" : modeImagePicked
       }
     );
     resPost.then(
         (value) {
         if(value.statusCode==200){
           tecMsg.text = "";
+          if(modeImagePicked){
+            imageBasee64Content = "";
+            modeImagePicked = false;
+          }
           fetchMessages();
         }
       },
