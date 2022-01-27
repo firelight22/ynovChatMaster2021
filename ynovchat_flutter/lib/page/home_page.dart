@@ -152,7 +152,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ]
                   ,),
-                  subtitle: /*isImage ? Image.memory(bytes) :*/Text(snapshot.data![index].content),
+                  subtitle: snapshot.data![index].isImage ?
+                            Image.memory(base64Decode(snapshot.data![index].content)) :
+                            Text(snapshot.data![index].content),
             ),
               )
           );
@@ -227,7 +229,7 @@ class _HomePageState extends State<HomePage> {
       body: {
         "content" : modeImagePicked ? imageBasee64Content :
           tecMsg.value.text.trim(),
-        "isImage" : modeImagePicked
+        "isImage" : modeImagePicked.toString()
       }
     );
     resPost.then(
